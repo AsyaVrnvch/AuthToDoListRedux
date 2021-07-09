@@ -17,10 +17,21 @@ class TaskList extends Component {
         this.props.onSignOut();
     }
 
+    change(id) {
+        this.props.onChange(id)
+    }
+
     render() {
         if(!this.props.isAuth){
             return(
-                <h2>Error, this user is not registered</h2>
+                <>
+                    <h2>Error, this user is not registered</h2>
+                    <Link to='/'>
+                        <button type='button' className='btn btn-primary'>
+                            Return to main menu
+                        </button>
+                    </Link>
+                </>
             )
         }
         else 
@@ -50,7 +61,7 @@ class TaskList extends Component {
                                     </td>
                                     <td className='center'>
                                         <span>
-                                            <input type='checkbox' />
+                                            <input type='checkbox' onClick={() => this.change(task.id)}/>
                                         </span>
                                     </td>
                                     <td className='center'>
@@ -91,6 +102,9 @@ export default connect(
         },
         onSignOut: () => {
             dispatch({ type: 'SIGN_OUT' })
+        },
+        onChange: (index) => {
+            dispatch({ type: 'CHANGE_TASK', payload: index })
         }
     })
 )(TaskList)

@@ -76,6 +76,15 @@ export default function tasklist(state = initialState, action) {
                 ...state,
                 tasks: state.tasks.filter((item) => item.id !== action.payload)
             }
+        
+        case 'CHANGE_TASK':
+            console.log('change')
+            const a = state.tasks.map((item) => item.id === action.payload ? {...item,isDone: !item.isDone} : {...item})
+            console.log(a)
+            return {
+                ...state,
+                tasks:a
+            }
 
         case 'SIGN_IN':
             const e = action.payload.email;

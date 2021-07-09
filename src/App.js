@@ -1,7 +1,7 @@
-import SignIn from './SignIn'
-import TaskList from './Tasklist'
+import SignIn from './components/SignIn'
+import TaskList from './components/Tasklist'
 import {Route} from 'react-router-dom'
-import SignUp from './Registration'
+import SignUp from './components/Registration'
 
 function App() {
     return (
