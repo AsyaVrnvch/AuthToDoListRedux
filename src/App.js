@@ -1,19 +1,20 @@
-import SignIn from './components/SignIn'
-import TaskList from './components/Tasklist'
 import {Route} from 'react-router-dom'
-import SignUp from './components/Registration'
+import './App.css'
+import SignUpContainer from './containers/signUpContainer'
+import SignInContainer from './containers/signInContainer'
+import TaskListContainer from './containers/taskListContainer'
 
 function App() {
     return (
         <>
         <Route exact path='/'>
-            <SignIn />
+            <SignInContainer />
         </Route>
         <Route exact path='/tasklist'>
-            <TaskList />
+            <TaskListContainer />
         </Route>
         <Route exact path='/signUp'>
-            <SignUp />
+            <SignUpContainer />
         </Route>
         </>
 

@@ -1,29 +1,33 @@
 import { Component } from 'react';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom'
 
 class TaskList extends Component {
 
-    deleteTask(id) {
-        this.props.onDeleteTask(id);
+    state={
+        taskName:''
+    }
+
+    constructor(props) {
+        super(props)
+        this.addTask = this.addTask.bind(this)
     }
 
     addTask() {
-        this.props.onAddTask(this.addInput.value, this.props.isAuth);
-        this.addInput.value = ''
+        this.props.onAddTask(this.state.taskName, this.props.isAuth, this.props.currentEmail);
+        this.setState({
+            taskName:''
+        });
     }
 
-    signOut() {
-        this.props.onSignOut();
-    }
-
-    change(id) {
-        this.props.onChange(id)
+    handleChange = (event) => {
+        this.setState(({
+            [event.target.name]: event.target.value
+        }))
     }
 
     render() {
-        if(!this.props.isAuth){
-            return(
+        if (!this.props.isAuth) {
+            return (
                 <>
                     <h2>Error, this user is not registered</h2>
                     <Link to='/'>
@@ -34,16 +38,18 @@ class TaskList extends Component {
                 </>
             )
         }
-        else 
+        else
             return (
                 <div className='container'>
                     <h2>Tasks list</h2>
                     <p>Add task:</p>
-                    <input type='text'
+                    <input type='text' required
                         className="form-control col-5 mb-2"
-                        ref={(input) => { this.addInput = input }} />
-                    <button type='button' 
-                        onClick={this.addTask.bind(this)}
+                        name='taskName'
+                        value={this.state.taskName}
+                        onChange={this.handleChange}/>
+                    <button type='button'
+                        onClick={this.addTask}
                         className='btn btn-primary mb-2'>Add</button>
                     <table className='table'>
                         <thead>
@@ -61,19 +67,19 @@ class TaskList extends Component {
                                     </td>
                                     <td className='center'>
                                         <span>
-                                            <input type='checkbox' onClick={() => this.change(task.id)}/>
+                                            <input type='checkbox' onClick={() => this.props.onChange(task.id)} />
                                         </span>
                                     </td>
                                     <td className='center'>
-                                        <span style={{cursor:'pointer'}}
-                                            onClick={() => this.deleteTask(task.id)}>delete</span>
+                                        <span style={{ cursor: 'pointer' }}
+                                            onClick={() => this.props.onDeleteTask(task.id)}>delete</span>
                                     </td>
                                 </tr>
                             )}
                         </tbody>
                     </table>
                     <Link to='/'>
-                        <button onClick={this.signOut.bind(this)} 
+                        <button onClick={this.props.onMainMenu}
                             className='btn btn-primary'>
                             Sign Out
                         </button>
@@ -84,27 +90,4 @@ class TaskList extends Component {
 
 }
 
-export default connect(
-    state => ({
-        tasklist: state.tasklist.tasks.filter(task => task.idEmail === state.tasklist.currentEmail),
-        isAuth:state.tasklist.isAuth
-    }),
-    dispatch => ({
-        onDeleteTask: (index) => {
-            dispatch({ type: 'DELETE_TASK', payload: index })
-        },
-        onAddTask: (text, check) => {
-            const payload = {
-                textAdd: text,
-                isAuth: check
-            }
-            dispatch({ type: 'ADD_TASK', payload })
-        },
-        onSignOut: () => {
-            dispatch({ type: 'SIGN_OUT' })
-        },
-        onChange: (index) => {
-            dispatch({ type: 'CHANGE_TASK', payload: index })
-        }
-    })
-)(TaskList)
+export default TaskList

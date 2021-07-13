@@ -1,5 +1,9 @@
 const initialState = {
-    yetReg: 5,
+    isSuccessSignUp: null,
+    singUpError: '',
+
+    isAuth: false,
+    currentEmail:'',
     accounts: [
         {
             email: 'ivanBybenkov@mail.ru',
@@ -28,17 +32,19 @@ const initialState = {
 export default function account(state = initialState, action) {
     switch (action.type) {
         case 'SIGN_UP':
-            const a = state.accounts.filter((account) => account.email === action.payload.e)
-            if (a.length !== 0) {
+            const registeredUser = state.accounts.find((account) => account.email === action.payload.e)
+            if (registeredUser) {
                 return {
                     ...state,
-                    yetReg: 1
+                    isSuccessSignUp: false,
+                    singUpError: 'Please check the data.The user with this email address is already registered or you entered incorrect data'
                 }
             }
             else {
                 return {
                     ...state,
-                    yetReg: 0,
+                    isSuccessSignUp: true,
+                    singUpError:'',
                     accounts: [
                         ...state.accounts,
                         {
@@ -49,6 +55,28 @@ export default function account(state = initialState, action) {
                 }
             }
 
+        case 'SIGN_IN':
+            const email = action.payload.email;
+            const password = action.payload.password;
+            const currentAccount = state.accounts.find((item) => item.email === email && item.password === password)
+            let curEmail='';
+            if(currentAccount) curEmail= currentAccount.email
+            return {
+                ...state,
+                isAuth: !!currentAccount,
+                currentEmail:curEmail
+            }
+            
+        case 'MAIN_MENU':
+            return {
+                ...state,
+                isSuccessSignUp: null,
+                singUpError: '',
+                emailValid: null,
+                passwordValid: null,
+                currentEmail: '',
+                isAuth: false
+            }
         default: return state;
     }
 }

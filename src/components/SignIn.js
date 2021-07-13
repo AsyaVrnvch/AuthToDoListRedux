@@ -1,13 +1,25 @@
 import { Component } from "react";
-import { connect } from "react-redux"
 import { Link } from 'react-router-dom'
 
 class SignIn extends Component {
 
-    signIn() {
-        this.props.onSignIn(this.emailInput.value, this.passwordInput.value, this.props.accList);
-        this.emailInput.value = '';
-        this.passwordInput.value = '';
+    state={
+        email:'',
+        password:''
+    }
+
+    signIn = () => {
+        this.props.onSignIn(this.state.email, this.state.password);
+        this.setState({
+            email: '',
+            password: '',
+        });
+    }
+
+    handleChange = (event) => {
+        this.setState(({
+            [event.target.name]: event.target.value
+        }))
     }
 
     render() {
@@ -16,20 +28,24 @@ class SignIn extends Component {
                 <div className='form-group'>
                     <h2>Sign In</h2>
                     <div className='form-group'>
-                        <p>Enter your email: </p>
-                        <input type='email' 
-                            ref={(input) => { this.emailInput = input }} 
-                            className="form-control"/>
+                        <p>Enter your email-address: </p>
+                        <input type='email'
+                            name="email"
+                            value={this.state.email}
+                            onChange={this.handleChange}
+                            className="form-control" />
                     </div>
                     <div className='form-group'>
                         <p>Enter your password: </p>
-                        <input type='password' 
-                            ref={(input) => { this.passwordInput = input }} 
+                        <input type='password'
+                            name='password'
+                            value={this.state.password}
+                            onChange={this.handleChange}
                             className="form-control" />
                     </div>
                     <Link to='/tasklist'>
                         <button type='button'
-                            onClick={this.signIn.bind(this)}
+                            onClick={this.signIn}
                             className='btn btn-primary'
                         >Sign In</button>
                     </Link>
@@ -43,18 +59,4 @@ class SignIn extends Component {
     }
 }
 
-export default connect(
-    state => ({
-        accList: state.account.accounts
-    }),
-    dispatch => ({
-        onSignIn: (curEmail, curPass, accList) => {
-            const payload = {
-                email: curEmail,
-                password: curPass,
-                acc: accList
-            }
-            dispatch({ type: 'SIGN_IN', payload });
-        },
-    })
-)(SignIn)
+export default SignIn
